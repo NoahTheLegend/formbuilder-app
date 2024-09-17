@@ -8,4 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class SubmittedForms extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'first_name',
+        'last_name',
+        'phone',
+        'photo',
+        'comment',
+    ];
 }
