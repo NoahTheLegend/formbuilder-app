@@ -28,6 +28,7 @@ optional:
 3.
 init livewire
 > php artisan make:livewire name
+> php artisan filament:install --panels
 
 4.
 init filament
@@ -41,3 +42,8 @@ init vendor
 local server run cmd
 > php artisan serve
 (localhost port 8000)
+
+admin panel
+> php artisan tinker
+> use App\Models\User;
+> User::create(['name'=>'admin','email'=>'admin@example.com','password'=>bcrypt('admin')]);
