@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\SubmittedForms;
-
+use App\Mail\FormSubmitted;
+use Illuminate\Support\Facades\Mail;
 class SubmittedFormController extends Controller
 {
     public function submitForm(Request $request)
@@ -22,6 +23,12 @@ class SubmittedFormController extends Controller
             $path = $request->file('photo')->store('photos', 'public');
             $validated['photo'] = $path;
         }
+        
+        /*Mail::raw('amogus', function ($message) {
+            $message->to('admin@example.com')
+                    ->subject('test');
+        });*/
+        Mail::to('admin@example.com')->send(new FormSubmitted($validated));
 
         SubmittedForms::create($validated);
         return redirect()->back()->with('success', 'submitted');
