@@ -33,9 +33,10 @@ class SubmittedFormsResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('id')->sortable(),
-                TextColumn::make('name')->label('Name'),
-                TextColumn::make('email')->label('Email'),
-                TextColumn::make('message')->label('Message')->limit(50),
+                TextColumn::make('first_name')->label('First Name'),
+                TextColumn::make('last_name')->label('Last name'),
+                TextColumn::make('photo')->label('Photo'),
+                TextColumn::make('comment')->label('Comment')->limit(50),
                 TextColumn::make('created_at')->label('Submitted at')->sortable(),
             ])
             ->filters([
