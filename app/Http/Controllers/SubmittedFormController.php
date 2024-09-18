@@ -5,32 +5,39 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\SubmittedForms;
 use App\Mail\FormSubmitted;
+use App\Models\AdminFormElement;
 use Illuminate\Support\Facades\Mail;
+
+// to be honest, this was (too) hard for me to find out a correct and working way
+
+// todo: integrate current dynamic builder into submitform table
 class SubmittedFormController extends Controller
 {
     public function submitForm(Request $request)
     {
-        $validated = $request->validate([ // validate via requirements
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'phone' => 'required|string',
-            'photo' => 'required|image|max:2048',
-            'comment' => 'nullable|string',
-        ]);
+        $fields = AdminFormElement::where('is_active', true)->get();
+        $rules = [];
 
-        //
+        foreach ($fields as $field) {
+            if ($field->is_required || $field->validation_rules) {
+                $rules[$field->name] = $field->validation_rules ? json_decode($field->validation_rules, true) : ['required'];
+            }
+        }
+
+        $validated = $request->validate($rules);
+
         if ($request->hasFile('photo')) {
             $path = $request->file('photo')->store('photos', 'public');
             $validated['photo'] = $path;
         }
-        
-        /*Mail::raw('amogus', function ($message) {
-            $message->to('admin@example.com')
-                    ->subject('test');
-        });*/
+
+        SubmittedForms::create([
+            'element_data' => json_encode($validated),
+        ]);
+
         Mail::to('admin@example.com')->send(new FormSubmitted($validated));
 
-        SubmittedForms::create($validated);
         return redirect()->back()->with('success', 'submitted');
     }
 }
+

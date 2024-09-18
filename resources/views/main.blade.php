@@ -16,48 +16,32 @@
         </style>
         @livewireStyles
         <link href="css/styles.css" rel="stylesheet" />
-    
-        <!-- used with Chat GPT markup -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
 
     </head>
     <body class="font-sans antialiased dark:bg-black dark:text-white/50">
     <div class="container mx-auto p-8">
 
         <!-- MAIN FORM -->
-        <form action="{{ route('submit.form') }}" method="POST" enctype="multipart/form-data" class="bg-black shadow-md rounded px-8 pt-6 pb-8 mb-4">
+        <form action="{{ route('submit.form') }}" method="POST">
             @csrf
-            <!-- generated with Chat GPT -->
-            <div class="mb-4">
-                <label for="first_name" class="block text-gray-700 text-sm font-bold mb-2">Name:</label>
-                <input type="text" name="first_name" id="first_name" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-            </div>
-
-            <div class="mb-4">
-                <label for="last_name" class="block text-gray-700 text-sm font-bold mb-2">Surname:</label>
-                <input type="text" name="last_name" id="last_name" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-            </div>
-
-            <div class="mb-4">
-                <label for="phone" class="block text-gray-700 text-sm font-bold mb-2">Phone:</label>
-                <input type="text" name="phone" id="phone" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-            </div>
-
-            <div class="mb-4">
-                <label for="photo" class="block text-gray-700 text-sm font-bold mb-2">Photo:</label>
-                <input type="file" name="photo" id="photo" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-            </div>
-
-            <div class="mb-4">
-                <label for="comment" class="block text-gray-700 text-sm font-bold mb-2">Comment (optional):</label>
-                <textarea name="comment" id="comment" rows="4" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></textarea>
-            </div>
-
-            <div class="mb-4">
-                <button type="submit" class="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Submit</button>
-            </div>
-        </form>
+            @if(isset($fields) && count($fields) > 0)
+            @foreach ($fields as $field)
+                    <div>
+                        <label>{{ $field->label }}</label>
+                        @if ($field->element_type === 'text')
+                            <input type="text" name="{{ $field->element_name }}" />
+                        @elseif ($field->element_type === 'textarea')
+                            <textarea name="{{ $field->element_name }}"></textarea>
+                        @endif
+                        <!--add select here-->
+                    </div>
+                @endforeach
+            @else
+                <p>debug: form is empty</p>
+            @endif
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>     
+           
     </div>
 
     <script type="text/javascript">
