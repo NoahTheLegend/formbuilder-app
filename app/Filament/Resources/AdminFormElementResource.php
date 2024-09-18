@@ -35,13 +35,11 @@ class AdminFormElementResource extends Resource
                     ->options([
                         'text' => 'Text',
                         'email' => 'Email',
-                        'phone' => 'Phone',
-                        'textarea' => 'Textarea',
+                        'tel' => 'Phone',
                     ])->required(),
                 Toggle::make('element_data.is_required')->label('Required'),
-                Textarea::make('element_data.validation_rules')
-                    ->label('Validation Rules (JSON)')
-                    ->placeholder(json_encode(['required', 'string', 'max:255'])),
+                Textarea::make('element_data.validation_regex')
+                    ->label('Validation regular expression'),
                 Toggle::make('element_data.is_active')->label('Active'),
             ]);
     }
@@ -50,12 +48,12 @@ class AdminFormElementResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('id')->sortable(),
-                TextColumn::make('element_data->label')->label('Label')->sortable(),
-                TextColumn::make('element_data->name')->label('Name')->sortable(),
-                TextColumn::make('element_data->type')->label('Type')->sortable(),
-                IconColumn::make('element_data->is_required')->label('Required'),
-                IconColumn::make('element_data->is_active')->label('Active'),
+                TextColumn::make('id')->sortable(), // todo, fix column params, for some reason it can not insert (an existing) json property
+                TextColumn::make('element_data["label"]')->label('Label')->sortable(),
+                TextColumn::make('element_data["name"]')->label('Name')->sortable(),
+                TextColumn::make('element_data["type"]')->label('Type')->sortable(),
+                IconColumn::make('element_data["is_required"]')->label('Required'),
+                IconColumn::make('element_data["is_active"]')->label('Active'),
                 TextColumn::make('created_at')->dateTime(),
             ])
             ->actions([

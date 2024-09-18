@@ -8,6 +8,6 @@ class AdminFormElement extends Component
 {
     public function render()
     {
-        return view('livewire.admin-form-element');
+        return view('livewire.admin-form-elements');
     }
 }

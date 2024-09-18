@@ -19,17 +19,7 @@
 
     </head>
     <body class="font-sans antialiased dark:bg-black dark:text-white/50">
-    <div class="container mx-auto p-8">
-
-        <!-- MAIN FORM -->
-        <form action="{{ route('submit.form') }}" method="POST">
-            @csrf
-           
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </form>     
-           
-    </div>
-
+        {!! $formContent !!}
     @livewireScripts
-</body>
+    </body>
 </html>

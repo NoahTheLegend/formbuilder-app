@@ -10,26 +10,28 @@ use Illuminate\Support\Facades\Mail;
 
 // to be honest, this was (too) hard for me to find out a correct and working way
 
-// todo: integrate current dynamic builder into submitform table
 class SubmittedFormController extends Controller
 {
+    public function showForm()
+    {
+        $fields = AdminFormElement::where('element_data->is_active', true)->get();
+        $formContent = view('admin-form-elements', compact('fields'))->render();
+
+        return view('main', compact('formContent'));
+    }
+
     public function submitForm(Request $request)
     {
         $fields = AdminFormElement::where('is_active', true)->get();
         $rules = [];
 
         foreach ($fields as $field) {
-            if ($field->is_required || $field->validation_rules) {
-                $rules[$field->name] = $field->validation_rules ? json_decode($field->validation_rules, true) : ['required'];
+            if ($field->is_required || $field->validation_regex) {
+                $rules[$field->name] = $field->validation_regex ? json_decode($field->validation_regex, true) : ['required'];
             }
         }
 
         $validated = $request->validate($rules);
-
-        if ($request->hasFile('photo')) {
-            $path = $request->file('photo')->store('photos', 'public');
-            $validated['photo'] = $path;
-        }
 
         SubmittedForms::create([
             'element_data' => json_encode($validated),
