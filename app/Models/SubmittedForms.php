@@ -8,4 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class SubmittedForms extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'form_data',
+    ];
 }

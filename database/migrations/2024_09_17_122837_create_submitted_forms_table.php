@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('submitted_forms', function (Blueprint $table) {
             $table->id();
+            $table->json('form_data')->nullable();
             $table->timestamps();
         });
     }

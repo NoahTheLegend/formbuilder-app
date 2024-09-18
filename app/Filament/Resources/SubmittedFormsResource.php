@@ -11,8 +11,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Forms\Components\TextInput;
 
 class SubmittedFormsResource extends Resource
 {
@@ -23,9 +22,28 @@ class SubmittedFormsResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
-            ->schema([
-                //
-            ]);
+            ->schema(function () {
+                $submittedForm = SubmittedForms::find(request()->route('record'));
+                
+                if ($submittedForm && !is_null($submittedForm->form_data)) {
+                    $formData = json_decode($submittedForm->form_data, true);
+                } else {
+                    $formData = [];
+                }
+
+                $dynamicSchema = [];
+
+                if (!empty($formData)) {
+                    foreach ($formData as $key => $value) {
+                        $dynamicSchema[] = TextInput::make($key)
+                            ->label(ucfirst($key))
+                            ->placeholder($value) // hack? default() does not work
+                            ->required();
+                    }
+                }
+    
+                return $dynamicSchema;
+            });
     }
 
     public static function table(Table $table): Table
@@ -33,6 +51,7 @@ class SubmittedFormsResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('id')->sortable(),
+                TextColumn::make('form_data')->label('Form')->sortable(),
                 TextColumn::make('created_at')->label('Submitted at')->sortable(),
             ])
             ->filters([

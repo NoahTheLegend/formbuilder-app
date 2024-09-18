@@ -22,19 +22,30 @@ class SubmittedFormController extends Controller
 
     public function submitForm(Request $request)
     {
-        $fields = AdminFormElement::where('is_active', true)->get();
+        $fields = AdminFormElement::where('element_data->is_active', true)->get();
+
         $rules = [];
 
         foreach ($fields as $field) {
-            if ($field->is_required || $field->validation_regex) {
-                $rules[$field->name] = $field->validation_regex ? json_decode($field->validation_regex, true) : ['required'];
+            $fieldName = $field->element_data['name'];
+
+            $fieldRules = [];
+
+            if (!empty($field->element_data['is_required'])) {
+                $fieldRules[] = 'required';
             }
+
+            if (!empty($field->element_data['validation_regex'])) {
+                $fieldRules[] = 'regex:' . $field->element_data['validation_regex'];
+            }
+
+            $rules[$fieldName] = $fieldRules;
         }
 
         $validated = $request->validate($rules);
 
         SubmittedForms::create([
-            'element_data' => json_encode($validated),
+            'form_data' => json_encode($validated),
         ]);
 
         Mail::to('admin@example.com')->send(new FormSubmitted($validated));
@@ -42,4 +53,3 @@ class SubmittedFormController extends Controller
         return redirect()->back()->with('success', 'submitted');
     }
 }
-
