@@ -24,31 +24,11 @@
         <!-- MAIN FORM -->
         <form action="{{ route('submit.form') }}" method="POST">
             @csrf
-            @if(isset($fields) && count($fields) > 0)
-            @foreach ($fields as $field)
-                    <div>
-                        <label>{{ $field->label }}</label>
-                        @if ($field->element_type === 'text')
-                            <input type="text" name="{{ $field->element_name }}" />
-                        @elseif ($field->element_type === 'textarea')
-                            <textarea name="{{ $field->element_name }}"></textarea>
-                        @endif
-                        <!--add select here-->
-                    </div>
-                @endforeach
-            @else
-                <p>debug: form is empty</p>
-            @endif
+           
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>     
            
     </div>
-
-    <script type="text/javascript">
-        $(document).ready(function(){
-            $('#phone').mask('+38 (999) 999-9999');
-        });
-    </script>
 
     @livewireScripts
 </body>
