@@ -28,32 +28,52 @@ class AdminFormElementResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
-            ->schema([
-                TextInput::make('element_data.label')->required(),
-                TextInput::make('element_data.name')->required(),
-                Select::make('element_data.type')
-                    ->options([
-                        'text' => 'Text',
-                        'email' => 'Email',
-                        'tel' => 'Phone',
-                    ])->required(),
-                Toggle::make('element_data.is_required')->label('Required'),
-                Textarea::make('element_data.validation_regex')
-                    ->label('Validation regular expression'),
-                Toggle::make('element_data.is_active')->label('Active'),
-            ]);
+        ->schema([
+            TextInput::make('element_data.label')->required(),
+            TextInput::make('element_data.name')->required(),
+
+            Select::make('element_data.type')
+            ->options([
+                'text' => 'Text',
+                'email' => 'Email',
+                'tel' => 'Phone',
+            ])->required(),
+            Select::make('element_data.tag')
+                ->options([
+                    'input' => 'Input',
+                    'textarea' => 'Textarea',
+                    'select' => 'Select',
+                ])->required()
+                ->reactive()
+                ->afterStateUpdated(function ($state, $set) {
+                    if ($state === 'select') {
+                        $set('element_data.options', '');
+                    }
+                }),
+
+            TextInput::make('element_data.placeholder')->label('Placeholder'),
+            TextInput::make('element_data.options')
+                ->label('Options (separated by semicolons)')
+                ->visible(fn($get) => $get('element_data.tag') === 'select'),
+            Toggle::make('element_data.is_required')->label('Required')->required(),
+            Textarea::make('element_data.validation_regex')->label('Validation regular expression'),
+            Toggle::make('element_data.is_active')->label('Active')->required(),
+        ]);
+
     }
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                TextColumn::make('id')->sortable(), // todo, fix column params, for some reason it can not insert (an existing) json property
-                TextColumn::make('element_data["label"]')->label('Label')->sortable(),
-                TextColumn::make('element_data["name"]')->label('Name')->sortable(),
-                TextColumn::make('element_data["type"]')->label('Type')->sortable(),
-                IconColumn::make('element_data["is_required"]')->label('Required'),
-                IconColumn::make('element_data["is_active"]')->label('Active'),
+                TextColumn::make('id')->sortable(),
+                TextColumn::make('element_data.label')->label('Label')->sortable(),
+                TextColumn::make('element_data.name')->label('Name')->sortable(),
+                TextColumn::make('element_data.type')->label('Type')->sortable(),
+                TextColumn::make('element_data.tag')->label('Tag')->sortable(),
+                //todo: for some reason radio buttons below won't show up
+                IconColumn::make('element_data.is_required')->label('Required'),
+                IconColumn::make('element_data.is_active')->label('Active'),
                 TextColumn::make('created_at')->dateTime(),
             ])
             ->actions([

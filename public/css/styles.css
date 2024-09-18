@@ -3,7 +3,7 @@ body, form {
     color:#ffffff;
 }
 
-textarea, input {
+textarea, input, select {
     width: fit-content;
     background: #333;
     border-radius: 15px;
@@ -15,7 +15,7 @@ form {
     flex-direction: column;
 }
 
-.mb-4 {
+.form-group {
     display: flex;
     flex-direction: column;
     max-width: 500px;
@@ -27,6 +27,10 @@ form {
     margin-top: 20px;
 }
 
-.mb-4 label {
+.form-group label {
     text-align: center;
+}
+
+input:invalid {
+  border: red solid 2px;
 }
