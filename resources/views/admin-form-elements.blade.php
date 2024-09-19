@@ -22,7 +22,7 @@
                             placeholder="{{ $field->element_data['placeholder'] }}"></textarea>
                     @else
                         <input id="{{ $field->id }}" name="{{ $field->element_data['name'] }}" 
-                            type="{{ $field->element_data['tag'] }}" 
+                            type="{{ $field->element_data['type'] }}" 
                             @if (!empty($field->element_data['validation_regex']))
                                 pattern="{{ str_replace("/", "", $field->element_data['validation_regex']) }}"
                             @endif
