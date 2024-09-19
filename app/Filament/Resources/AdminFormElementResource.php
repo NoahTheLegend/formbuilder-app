@@ -37,6 +37,7 @@ class AdminFormElementResource extends Resource
                 'text' => 'Text',
                 'email' => 'Email',
                 'tel' => 'Phone',
+                'file' => 'File',
             ])->required(),
             Select::make('element_data.tag')
                 ->options([
