@@ -38,7 +38,22 @@ class AdminFormElementResource extends Resource
                 'email' => 'Email',
                 'tel' => 'Phone',
                 'file' => 'File',
-            ])->required(),
+            ])->required()
+            ->reactive()
+            ->afterStateUpdated(function ($state, $set, $get) {
+                if (!$get('element_data.validation_regex')) {
+                    if ($state === 'tel') {
+                        $regex = '/^[0-9]{3}[0-9]{3}[0-9]{4}$/';
+                        $set('element_data.validation_regex', $regex);
+                    }
+                    else if ($state === 'email') {
+                        $regex = '/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/';
+                        $set('element_data.validation_regex', $regex);
+                    } else {
+                        $set('element_data.validation_regex', '');
+                    }
+                }
+            }),
             Select::make('element_data.tag')
                 ->options([
                     'input' => 'Input',
